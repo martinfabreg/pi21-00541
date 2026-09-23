@@ -14,8 +14,8 @@ authors:
     orcid: "https://orcid.org/0000-0002-0472-1820"
     affiliation: "Grupo de Enfermedades Multisistémicas, Instituto Ramón y Cajal de Investigación Sanitaria (IRYCIS), Hospital Universitario Ramón y Cajal, Madrid, Spain"
 license: MIT
-repository-code: "https://github.com/USUARIO_GITHUB/pi21-00541-calculadora"
-url: "https://usuario_github.github.io/pi21-00541-calculadora/"
+repository-code: "https://github.com/martinfabreg/pi21-00541"
+url: "https://martinfabreg.github.io/pi21-00541/"
 keywords:
   - heart failure
   - HFpEF

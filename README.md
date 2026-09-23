@@ -10,9 +10,9 @@ Versión **1.0.0** · 2026-09-23 · DOI: pendiente de la primera release en Zeno
 
 | | Enlace |
 |---|---|
-| Calculadora web | https://usuario_github.github.io/pi21-00541-calculadora/ |
-| Aplicación Shiny, ejecutada en el navegador (la primera carga tarda 10-30 s) | https://usuario_github.github.io/pi21-00541-calculadora/shiny/ |
-| Código, parámetros del modelo y casos de prueba | https://github.com/USUARIO_GITHUB/pi21-00541-calculadora |
+| Calculadora web | https://martinfabreg.github.io/pi21-00541/ |
+| Aplicación Shiny, ejecutada en el navegador (la primera carga tarda 10-30 s) | https://martinfabreg.github.io/pi21-00541/shiny/ |
+| Código, parámetros del modelo y casos de prueba | https://github.com/martinfabreg/pi21-00541 |
 | Versión archivada con identificador persistente | DOI: pendiente de la primera release en Zenodo |
 
 Las dos interfaces leen **el mismo fichero de parámetros** (`modelo.json`) y no envían datos a ningún servidor: los valores introducidos se procesan exclusivamente en el navegador del usuario.
@@ -46,7 +46,7 @@ con x<sub>j</sub> en la escala del modelo (logaritmo natural en las variables ma
 
    `fc878f83697d812c139eafcb250ac5d52cf9b05bc2e0dc26dcc0ba71dcb409b8`
 
-   y figura, junto con las de los demás ficheros, en [`verificacion/SHA256SUMS.txt`](verificacion/SHA256SUMS.txt). Para comprobarla, descargue https://usuario_github.github.io/pi21-00541-calculadora/modelo.json y ejecute `sha256sum modelo.json` (Linux/macOS) o `certutil -hashfile modelo.json SHA256` (Windows).
+   y figura, junto con las de los demás ficheros, en [`verificacion/SHA256SUMS.txt`](verificacion/SHA256SUMS.txt). Para comprobarla, descargue https://martinfabreg.github.io/pi21-00541/modelo.json y ejecute `sha256sum modelo.json` (Linux/macOS) o `certutil -hashfile modelo.json SHA256` (Windows).
 
 2. **Casos de prueba.** Introduzca los perfiles siguientes en cualquiera de las dos interfaces: las cifras deben coincidir con la tabla, salvo el redondeo a un decimal. En la calculadora web, los campos que el modelo elegido no usa aparecen en gris y no intervienen en el cálculo.
 
