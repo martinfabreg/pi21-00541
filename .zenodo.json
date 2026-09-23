@@ -1,0 +1,12 @@
+{
+  "title": "Calculadora de riesgo tras una hospitalización por insuficiencia cardíaca con fracción de eyección preservada en pacientes de 80 o más años (proyecto PI21/00541)",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "access_right": "open",
+  "license": "mit",
+  "language": "spa",
+  "creators": [{"name":"Fabregate Fuente, Martín","affiliation":"Grupo de Enfermedades Multisistémicas, Instituto Ramón y Cajal de Investigación Sanitaria (IRYCIS), Hospital Universitario Ramón y Cajal, Madrid, Spain","orcid":"0000-0002-7378-4868"},{"name":"Manzano Espinosa, Luis","affiliation":"Grupo de Enfermedades Multisistémicas, Instituto Ramón y Cajal de Investigación Sanitaria (IRYCIS), Hospital Universitario Ramón y Cajal, Madrid, Spain","orcid":"0000-0002-0472-1820"}],
+  "description": "<p>Calculadora de uso exclusivo en investigación (sin marcado CE; Reglamento (UE) 2017/745) que estima la mortalidad por cualquier causa y el combinado de muerte o reingreso por insuficiencia cardíaca a 30, 90 y 365 días tras el alta, en pacientes de 80 o más años hospitalizados por insuficiencia cardíaca con fracción de eyección preservada.</p><p>Modelos de Weibull de tiempo de fallo acelerado desarrollados en una única cohorte (n = 175) sin validación externa. Incluye una calculadora web estática y una aplicación Shiny que comparten el mismo fichero de parámetros (modelo.json), casos de prueba y huellas SHA-256 para la verificación independiente. No contiene datos individuales.</p><p>Versión en línea: https://usuario_github.github.io/pi21-00541-calculadora/</p>",
+  "keywords": ["heart failure", "HFpEF", "older adults", "prognostic model", "risk calculator", "Shiny"],
+  "notes": "Proyecto PI21/00541, financiado por el Instituto de Salud Carlos III (ISCIII) (Acción Estratégica en Salud 2021) y cofinanciado por la Unión Europea."
+}

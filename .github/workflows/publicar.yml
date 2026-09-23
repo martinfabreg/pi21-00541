@@ -1,0 +1,70 @@
+# Construye y publica la calculadora en GitHub Pages en cada cambio de la rama
+# main. Requisito unico: Settings > Pages > Build and deployment > Source =
+# "GitHub Actions". Patron derivado de posit-dev/r-shinylive (examples) y
+# r-lib/actions.
+name: Publicar calculadora
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar huellas SHA-256
+        run: sha256sum --check --strict verificacion/SHA256SUMS.txt
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::shinylive
+            any::shiny
+            any::jsonlite
+
+      - name: Comprobar casos de prueba
+        run: Rscript verificacion/casos_prueba.R --comprobar
+
+      - name: Construir el sitio (web + Shinylive)
+        shell: Rscript {0}
+        run: |
+          dir.create("_site")
+          ok <- file.copy(list.files("web", full.names = TRUE), "_site")
+          stopifnot(all(ok))
+          shinylive::export("app", "_site/shiny")
+          stopifnot(file.exists("_site/shiny/app.json"))
+          dir.create("_site/verificacion")
+          ok <- file.copy(list.files("verificacion", full.names = TRUE), "_site/verificacion")
+          stopifnot(all(ok))
+          file.create("_site/.nojekyll")
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+
+  desplegar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

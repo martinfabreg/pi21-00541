@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HF risk calculator &middot; PI21/00541</title>
+<style>
+:root{
+  --az:#1f4e79;--ro:#b7472a;--ve:#2e6b4f;
+  --gr:#f4f6f8;--bd:#d6dbe1;--tx:#1a1a1a;--sv:#6b7680;
+  --off:#eef1f4;--offtx:#9aa4ad;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--tx);background:#fff;line-height:1.45;font-size:14px}
+header{background:var(--az);color:#fff;padding:12px 20px}
+header h1{margin:0;font-size:17px;font-weight:600}
+header p{margin:3px 0 0;font-size:12px;opacity:.85}
+.aviso{background:#fdf1ee;border-left:4px solid var(--ro);color:#7a2e1b;
+  padding:8px 16px;font-size:12px;margin:0}
+.aviso b{color:var(--ro)}
+main{max-width:1240px;margin:0 auto;padding:14px 20px 40px}
+.cols{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.izq{flex:0 0 452px;min-width:320px}
+.der{flex:1 1 430px;min-width:380px}
+.rot{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--sv);margin:0 0 6px}
+h3{font-size:13px;color:var(--az);margin:14px 0 6px}
+.seleccion{margin-bottom:14px}
+.segb{display:flex;gap:8px}
+.segb label{flex:1;position:relative}
+.segb input{position:absolute;opacity:0;pointer-events:none}
+.segb span{display:block;text-align:center;padding:8px 8px;border:1.5px solid var(--bd);
+  border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;transition:.12s}
+.segb label:hover span{border-color:var(--az)}
+.segb input:checked+span{border-color:var(--az);background:var(--az);color:#fff}
+.segb.ro input:checked+span{border-color:var(--ro);background:var(--ro)}
+.selSet{width:100%;padding:9px 10px;border:1.5px solid var(--bd);border-radius:7px;
+  font-size:14px;font-weight:600;color:var(--az);background:#fff;cursor:pointer}
+.setDesc{font-size:12px;color:var(--sv);margin-top:6px;min-height:16px}
+.setDesc .pend{color:#8a6413;font-weight:600}
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px;margin-top:4px}
+.campo{transition:opacity .12s;min-width:0}
+.campo label{display:block;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.campo .uni{font-weight:400;color:var(--sv);font-size:11px}
+.campo input[type=number],.campo select{width:100%;padding:6px 8px;border:1px solid var(--bd);
+  border-radius:5px;font-size:13.5px;background:#fff}
+.campo input::placeholder{color:#b7bfc7}
+.campo .hint{font-size:10.5px;color:var(--sv);margin-top:1px}
+.campo.inactivo{opacity:.5}
+.campo.inactivo label{color:var(--offtx)}
+.campo.inactivo input,.campo.inactivo select{background:var(--off);color:var(--offtx);
+  border-style:dashed;cursor:not-allowed}
+.campo .noUsa{font-size:10.5px;color:var(--offtx);margin-top:1px;display:none}
+.campo.inactivo .noUsa{display:block}
+.campo.inactivo .hint{display:none}
+.fuera{border-color:var(--ro)!important;background:#fdf1ee!important}
+.avisoRango{color:var(--ro);font-size:11px;margin-top:1px;display:none}
+.avisoExtra{color:#8a6413;font-size:10.5px;margin-top:1px;display:none}
+.btncalc{width:100%;margin-top:14px;padding:11px 10px;border:none;border-radius:8px;
+  background:var(--az);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.12s}
+.btncalc:hover{filter:brightness(1.08)}
+.btncalc.ro{background:var(--ro)}
+.btnsec{display:flex;gap:8px;margin-top:8px}
+.btnsec button{flex:1;padding:6px 10px;border:1px solid var(--bd);background:#fff;
+  border-radius:6px;font-size:12px;cursor:pointer;color:var(--tx)}
+.btnsec button:hover{background:var(--gr)}
+.val{border-radius:8px;padding:11px 13px;margin-top:11px;font-size:12.5px;display:none}
+.val.faltan{background:#fbf3e3;border:1px solid #e6d3a6;color:#7a5a10}
+.val.pend{background:#eef1f4;border:1px solid var(--bd);color:#41505c}
+.val b{display:block;margin-bottom:4px}
+.val ul{margin:5px 0 7px;padding-left:17px}
+.val li{margin:2px 0}
+.val .acc{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.val .acc button{padding:6px 10px;border-radius:6px;border:1px solid var(--bd);
+  font-size:12px;font-weight:600;cursor:pointer;background:#fff}
+.val .acc button.p{background:var(--az);color:#fff;border-color:var(--az)}
+.derhead{display:flex;align-items:center;gap:9px;margin:2px 0 8px;flex-wrap:wrap}
+.derhead .pill{font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;color:#fff}
+.derhead .sub{font-size:12px;color:var(--sv)}
+.placeholder{border:1.5px dashed var(--bd);border-radius:10px;padding:40px 22px;
+  text-align:center;color:var(--sv);font-size:14px;background:var(--gr)}
+.placeholder b{color:var(--tx)}
+table{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+th{background:var(--az);color:#fff;text-align:left;padding:7px 10px;font-weight:600;font-size:12.5px}
+th.ro{background:var(--ro)}
+td{padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.cifra{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;white-space:nowrap}
+.barra{position:relative;height:18px;background:#eceff2;border-radius:3px;min-width:120px}
+.barra i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;display:block}
+.barra u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--tx);opacity:.55}
+.leyenda{font-size:11.5px;color:var(--sv);margin-top:6px}
+.leyenda span{display:inline-block;margin-right:12px}
+.leyenda i{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+footer{border-top:1px solid var(--bd);margin-top:26px;padding-top:11px;font-size:11.5px;color:var(--sv)}
+footer p{margin:0 0 6px}
+@media(max-width:560px){.campos{grid-template-columns:1fr}.izq{flex-basis:100%}}
+@media print{header{background:#fff;color:#000}.btncalc,.btnsec{display:none}.aviso{border-left-color:#000}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Risk calculator after a heart failure hospitalisation</h1>
+  <p>Patients aged 80 or older with preserved ejection fraction &middot; Project PI21/00541 &middot; IRYCIS</p>
+</header>
+<p class="aviso"><b>For research use only.</b> These estimates must not be used to make decisions about individual patients. Not a CE-marked medical device (Regulation (EU) 2017/745).</p>
+<main>
+  <div class="cols">
+    <div class="izq">
+      <div class="seleccion">
+        <p class="rot">1 &middot; Outcome</p>
+        <div class="segb" id="segDesenlace"></div>
+      </div>
+      <div class="seleccion">
+        <p class="rot">2 &middot; Model</p>
+        <select class="selSet" id="selSet" onchange="cambiarSet(this.value)"></select>
+        <div class="setDesc" id="setDesc"></div>
+      </div>
+      <div class="seleccion">
+        <p class="rot">3 &middot; Patient data</p>
+        <div class="campos" id="form"></div>
+      </div>
+      <button type="button" class="btncalc" id="btnCalc" onclick="calcular()">Calculate risk</button>
+      <div class="btnsec">
+        <button type="button" onclick="reiniciar()">Clear fields</button>
+        <button type="button" onclick="window.print()">Print</button>
+      </div>
+      <div class="val" id="validacion"></div>
+    </div>
+    <div class="der">
+      <div id="salida">
+        <div class="placeholder">Choose the <b>outcome</b> and the <b>model</b>, complete the patient data and press <b>Calculate risk</b>.</div>
+      </div>
+    </div>
+  </div>
+  <footer id="pie"></footer>
+</main>
+
+<script src="modelo.js"></script>
+<script src="publicacion.js" onerror="void 0"></script>
+<script>
+const CALC = window.CALC;
+const PUB = window.PUB || null;   /* solo en la version publicada (publicacion.js) */
+const RANGO_P = !!(CALC && CALC.rango_cohorte);   /* rango de la cohorte = P1-P99 */
+
+/* ===== English UI dictionaries (data language stays in modelo.js) ===== */
+const OUTCOME = {
+  mortalidad:{short:"Mortality", long:"All-cause mortality"},
+  combIC:{short:"Mortality + HF admission", long:"Composite: death or HF readmission"}
+};
+const SETMETA = {
+  s1:{name:"Model 1 · Clinical", desc:"Discharge-report variables only, without FRAIL or biomarkers. Simplest to apply."},
+  s2:{name:"Model 2 · Bedside", desc:"Clinical variables plus the FRAIL score. Obtainable at the bedside, without biomarkers."},
+  s3:{name:"Model 3 · Complete", desc:"Bedside plus the biomarkers retained by variable selection. The most complete model."}
+};
+/* short English labels and units per predictor (by variable_base) */
+const LAB = {
+  edad_hosp:"Age at admission", sexo:"Female sex", tas_ingreso:"Systolic BP at admission",
+  urg_pre3m:"HF emergency visits, prior 3 months", nyha34:"Prior NYHA class III/IV",
+  iccharlson_edad:"Age-adjusted Charlson index", ieca_ara2_alta_any:"ACEi/ARB at discharge",
+  furo_dia_alta:"Furosemide dose at discharge", ercmodg:"Moderate–severe CKD",
+  tfge_alta:"eGFR at discharge", na_alta:"Sodium at discharge", cl_alta:"Chloride at discharge",
+  hb_alta:"Haemoglobin at discharge", album_ing:"Albumin at admission",
+  vci20mm_vexus_alt:"IVC ≥20 mm / VExUS ≥1 at discharge", frailscore:"FRAIL score",
+  bnp_ing:"BNP at admission", ca125_ing:"CA-125 at admission", sst2_alta:"sST2 pre-discharge",
+  gdf15_alta:"GDF-15 pre-discharge", gal3_alta:"Galectin-3 pre-discharge"
+};
+const UNIT = {
+  edad_hosp:"years", tas_ingreso:"mmHg", iccharlson_edad:"points", furo_dia_alta:"mg/day",
+  tfge_alta:"mL/min/1.73m²", na_alta:"mmol/L", cl_alta:"mmol/L", hb_alta:"g/dL",
+  album_ing:"g/dL", frailscore:"0–5", bnp_ing:"pg/mL", ca125_ing:"U/mL", sst2_alta:"ng/mL",
+  gdf15_alta:"pg/mL", gal3_alta:"ng/mL"
+};
+/* physiologically plausible input range (wider than the cohort) and decimals */
+const PHYS = {
+  edad_hosp:[18,110,0], tas_ingreso:[50,260,0], iccharlson_edad:[0,37,0],
+  furo_dia_alta:[0,1000,0], tfge_alta:[0,150,0], na_alta:[100,175,0], cl_alta:[70,140,0],
+  hb_alta:[3,22,1], album_ing:[1,6,1], frailscore:[0,5,0], bnp_ing:[0,30000,0],
+  ca125_ing:[0,10000,0], sst2_alta:[0,500,1], gdf15_alta:[0,60000,0], gal3_alta:[0,250,1]
+};
+const ENTEROS = new Set(["frailscore","iccharlson_edad","edad_hosp"]);
+
+/* ===== Weibull AFT ===== */
+function lnGamma(z){
+  const g=[676.5203681218851,-1259.1392167224028,771.32342877765313,
+    -176.61502916214059,12.507343278686905,-0.13857109526572012,
+    9.9843695780195716e-6,1.5056327351493116e-7];
+  if(z<0.5) return Math.log(Math.PI/Math.sin(Math.PI*z))-lnGamma(1-z);
+  z-=1; let x=0.99999999999980993;
+  for(let i=0;i<8;i++) x+=g[i]/(z+i+1);
+  const t=z+7.5; return 0.5*Math.log(2*Math.PI)+(z+0.5)*Math.log(t)-t+Math.log(x);
+}
+function lambdaDe(m,vals){ let lp=m.mu; m.variables.forEach(v=>{ lp+=v.gamma_aft*vals[v.nombre]; }); return Math.exp(lp); }
+const riesgo=(lam,sg,t)=>1-Math.exp(-Math.exp((Math.log(t)-Math.log(lam))/sg));
+const pct=x=>(100*x).toFixed(1);
+const COLOR={ mortalidad:"#b7472a", combIC:"#1f4e79" };
+
+/* ===== State ===== */
+let estadoDes = CALC.desenlace_por_defecto || "combIC";
+let estadoSet = CALC.set_por_defecto || CALC.sets[CALC.sets.length-1].clave;
+let valores = {};
+let calculado = false;
+
+const setPorClave=c=>CALC.sets.find(s=>s.clave===c);
+const orderDes=["mortalidad","combIC"];
+function modeloDe(sc,dc){ const s=setPorClave(sc); return s&&s.modelos?s.modelos[dc]:null; }
+const modeloActivo=()=>modeloDe(estadoSet,estadoDes);
+const esComputable=m=>!!(m&&typeof m.mu==="number"&&Array.isArray(m.variables)&&m.variables.length);
+const setName=c=>SETMETA[c]?SETMETA[c].name:(setPorClave(c)?setPorClave(c).etiqueta:c);
+
+function catalogo(){
+  const cat={};
+  CALC.sets.forEach(s=>{ if(!s.modelos) return;
+    Object.keys(s.modelos).forEach(dk=>{ const m=s.modelos[dk];
+      if(!m||!Array.isArray(m.variables)) return;
+      m.variables.forEach(v=>{ const b=v.variable_base;
+        if(!cat[b]) cat[b]={meta:v,usos:{}};
+        (cat[b].usos[s.clave]=cat[b].usos[s.clave]||[]).push(dk); }); }); });
+  return cat;
+}
+const ORDEN=["edad_hosp","sexo","tas_ingreso","urg_pre3m","nyha34","iccharlson_edad",
+  "ieca_ara2_alta_any","furo_dia_alta","ercmodg","tfge_alta","na_alta","cl_alta",
+  "hb_alta","album_ing","vci20mm_vexus_alt","frailscore","bnp_ing","ca125_ing",
+  "sst2_alta","gdf15_alta","gal3_alta"];
+function basesOrdenadas(){ const cat=catalogo(),t=Object.keys(cat);
+  t.sort((a,b)=>{const ia=ORDEN.indexOf(a),ib=ORDEN.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);}); return t; }
+function basesActivas(){ const m=modeloActivo();
+  if(!m||!Array.isArray(m.variables)) return new Set();
+  return new Set(m.variables.map(v=>v.variable_base)); }
+
+/* rango: [min,max,dec] fisiologico si existe, si no derivado de la cohorte */
+function rangoDe(base,v){
+  if(PHYS[base]) return PHYS[base].slice();
+  const lo=v.log?Math.exp(v.minimo):v.minimo, hi=v.log?Math.exp(v.maximo):v.maximo;
+  const span=hi-lo, dec=span>40?0:(span>6?1:2);
+  return [Math.max(0,lo-span), hi+span, dec];   // amplio por defecto
+}
+function cohorteDe(base,v){ const lo=v.log?Math.exp(v.minimo):v.minimo, hi=v.log?Math.exp(v.maximo):v.maximo; return [lo,hi]; }
+
+/* ===== Left panel ===== */
+function pintarDesenlaces(){
+  const cont=document.getElementById("segDesenlace");
+  cont.className="segb"+(estadoDes==="mortalidad"?" ro":"");
+  cont.innerHTML=orderDes.filter(d=>modeloDe(estadoSet,d)||CALC.sets.some(s=>s.modelos&&s.modelos[d])).map(d=>
+    "<label><input type='radio' name='des' value='"+d+"'"+(d===estadoDes?" checked":"")+
+    " onchange='cambiarDesenlace(\""+d+"\")'><span>"+OUTCOME[d].short+"</span></label>").join("");
+}
+function pintarSelectSet(){
+  const sel=document.getElementById("selSet");
+  sel.innerHTML=CALC.sets.map(s=>{ const m=modeloDe(s.clave,estadoDes), pend=!esComputable(m);
+    return "<option value='"+s.clave+"'"+(s.clave===estadoSet?" selected":"")+">"+
+      setName(s.clave)+(pend?"  (coefficients pending)":"")+"</option>"; }).join("");
+  const m=modeloActivo(), nv=(m&&Array.isArray(m.variables))?m.variables.length:0, pend=!esComputable(m);
+  const sAct=setPorClave(estadoSet);   /* la descripcion de modelo.json (generada en 1.18) manda sobre la fija */
+  document.getElementById("setDesc").innerHTML=((sAct&&sAct.descripcion)?sAct.descripcion:(SETMETA[estadoSet]?SETMETA[estadoSet].desc:""))+
+    (nv?" <span style='color:#41505c'>&middot; "+nv+" predictors for this outcome.</span>":"")+
+    (pend?" <span class='pend'>Run the R patch to activate it.</span>":"");
+}
+function pintarForm(){
+  const form=document.getElementById("form"), cat=catalogo(), activas=basesActivas();
+  form.innerHTML="";
+  basesOrdenadas().forEach(base=>{
+    const v=cat[base].meta, activa=activas.has(base);
+    const et=LAB[base]||v.etiqueta.replace(/ \(por [^)]*\)/,"").replace(/^ln\(([^)]*)\)/,"$1");
+    const uni=UNIT[base]?" <span class='uni'>("+UNIT[base]+")</span>":"";
+    const val=valores[base]!==undefined?valores[base]:"";
+    const d=document.createElement("div"); d.className="campo"+(activa?"":" inactivo");
+    if(v.tipo==="bin"){
+      d.innerHTML="<label>"+et+"</label>"+
+        "<select id='c_"+base+"' "+(activa?"":"disabled")+" onchange='onCampo(\""+base+"\")'>"+
+        "<option value=''>—</option><option value='0'>No</option><option value='1'>Yes</option></select>"+
+        "<div class='noUsa'>Not used here (value kept).</div>";
+      form.appendChild(d);
+      document.getElementById("c_"+base).value=(val===""?"":String(Number(val)?1:0));
+    } else {
+      const dec=ENTEROS.has(base)?0:rangoDe(base,v)[2];
+      const paso=ENTEROS.has(base)?1:(dec===0?1:(dec===1?0.1:0.01));
+      const coh=cohorteDe(base,v), media=v.log?Math.exp(v.media):v.media;
+      d.innerHTML="<label>"+et+uni+"</label>"+
+        "<input type='number' id='c_"+base+"' step='"+paso+"' value='"+val+"' placeholder='e.g. "+media.toFixed(dec)+"' "+
+        (activa?"":"disabled")+" oninput='onCampo(\""+base+"\")'>"+
+        "<div class='hint'>cohort "+(RANGO_P?"P1–P99 ":"")+coh[0].toFixed(dec)+"–"+coh[1].toFixed(dec)+"</div>"+
+        "<div class='avisoExtra' id='x_"+base+"'>"+(RANGO_P?"Beyond the cohort's 1st–99th percentile range (extrapolation).":"Beyond cohort range (extrapolation).")+"</div>"+
+        "<div class='avisoRango' id='w_"+base+"'>Outside plausible physiological range.</div>"+
+        "<div class='noUsa'>Not used here (value kept).</div>";
+      form.appendChild(d);
+    }
+  });
+}
+function tinte(){ document.getElementById("btnCalc").className="btncalc"+(estadoDes==="mortalidad"?" ro":""); }
+
+/* ===== Read / changes ===== */
+function onCampo(base){ const el=document.getElementById("c_"+base); if(el) valores[base]=el.value; if(calculado) calcular(true); }
+function guardarTodo(){ Object.keys(catalogo()).forEach(base=>{ const el=document.getElementById("c_"+base); if(el) valores[base]=el.value; }); }
+function cambiarDesenlace(d){ guardarTodo(); estadoDes=d; refrescar(); }
+function cambiarSet(c){ guardarTodo(); estadoSet=c; refrescar(); }
+function refrescar(){ pintarDesenlaces(); pintarSelectSet(); pintarForm(); tinte();
+  document.getElementById("validacion").style.display="none";
+  if(calculado) calcular(true); else limpiarSalida(); }
+function reiniciar(){ valores={}; calculado=false; refrescar(); limpiarSalida(); }
+function limpiarSalida(){ document.getElementById("salida").innerHTML=
+  "<div class='placeholder'>Choose the <b>outcome</b> and the <b>model</b>, complete the patient data and press <b>Calculate risk</b>.</div>"; }
+
+/* ===== Validation + compute ===== */
+function calcular(silencioso){
+  guardarTodo();
+  const val=document.getElementById("validacion"), m=modeloActivo();
+  if(!esComputable(m)){
+    val.className="val pend"; val.style.display="block";
+    val.innerHTML="<b>This model has no coefficients yet.</b>"+setName(estadoSet)+
+      " is defined, but its coefficients have not been exported. Run "+
+      "<code>parche_calculadora_sets.R</code> to regenerate <code>modelo.js</code>.";
+    limpiarSalida(); return;
+  }
+  const cat=catalogo(), faltan=[];
+  m.variables.forEach(v=>{ const r=valores[v.variable_base];
+    if(r===undefined||r===""||Number.isNaN(parseFloat(r))) faltan.push(v.variable_base); });
+  if(faltan.length && !silencioso){
+    const lleno=b=>{ const r=valores[b]; return !(r===undefined||r===""||Number.isNaN(parseFloat(r))); };
+    const alt=CALC.sets.filter(s=>{ if(s.clave===estadoSet) return false;
+      const mm=modeloDe(s.clave,estadoDes); return esComputable(mm)&&mm.variables.every(v=>lleno(v.variable_base)); });
+    val.className="val faltan"; val.style.display="block";
+    let h="<b>Missing data for "+setName(estadoSet)+".</b>These predictors are required for this estimate and are empty:<ul>"+
+      faltan.map(b=>{ const et=LAB[b]||cat[b].meta.etiqueta;
+        const sets=Object.keys(cat[b].usos).map(setName).join(", ");
+        return "<li><b>"+et+"</b> <span style='color:#8a6413'>— in: "+sets+"</span></li>"; }).join("")+"</ul>"+
+      "Would you rather <b>fill in</b> these values or <b>switch to a model</b> that uses only the data already available?<div class='acc'>"+
+      "<button class='p' onclick='irARellenar(\""+faltan[0]+"\")'>Fill in the value</button>";
+    if(alt.length) alt.forEach(s=>{ h+="<button onclick='cambiarSet(\""+s.clave+"\");setTimeout(calcular,60)'>Use "+setName(s.clave)+"</button>"; });
+    else h+="<span style='align-self:center;font-size:12px;color:#8a6413'>No other model is covered by the current data.</span>";
+    h+="</div>"; val.innerHTML=h; limpiarSalida(); return;
+  }
+  if(faltan.length && silencioso){ limpiarSalida(); return; }
+  val.style.display="none"; calculado=true; pintarResultado(m);
+}
+function irARellenar(base){ document.getElementById("validacion").style.display="none";
+  const el=document.getElementById("c_"+base); if(el){ el.focus(); el.scrollIntoView({behavior:"smooth",block:"center"}); } }
+
+function valsDe(m){
+  const vals={}, cat=catalogo();
+  m.variables.forEach(v=>{ const base=v.variable_base; let x=parseFloat(valores[base]); if(Number.isNaN(x)) x=0;
+    if(v.tipo!=="bin"){
+      const ph=rangoDe(base,cat[base].meta), coh=cohorteDe(base,cat[base].meta);
+      const el=document.getElementById("c_"+base), w=document.getElementById("w_"+base), xw=document.getElementById("x_"+base);
+      const fueraPhys=x<ph[0]||x>ph[1], fueraCoh=x<coh[0]||x>coh[1];
+      if(el) el.classList.toggle("fuera",fueraPhys);
+      if(w) w.style.display=fueraPhys?"block":"none";
+      if(xw) xw.style.display=(!fueraPhys&&fueraCoh)?"block":"none";
+    }
+    vals[v.nombre]=v.log?Math.log(Math.max(x,1e-8)):x; });
+  return vals;
+}
+function curvaSVG(m,color){
+  const lam=lambdaDe(m,valsDe(m)),sg=m.sigma;
+  const W=460,H=200,mL=42,mR=12,mT=10,mB=28;
+  const px=t=>mL+(W-mL-mR)*t/365, py=p=>mT+(H-mT-mB)*(1-p);
+  let s="<svg viewBox='0 0 "+W+" "+H+"' width='100%' style='max-width:"+W+"px'>";
+  for(let g=0;g<=100;g+=25){ s+="<line x1='"+mL+"' y1='"+py(g/100)+"' x2='"+(W-mR)+"' y2='"+py(g/100)+"' stroke='#e3e7ea' stroke-width='1'/>"+
+    "<text x='"+(mL-6)+"' y='"+(py(g/100)+4)+"' font-size='10' fill='#6b7680' text-anchor='end'>"+g+" %</text>"; }
+  [30,90,180,270,365].forEach(t=>{ s+="<line x1='"+px(t)+"' y1='"+mT+"' x2='"+px(t)+"' y2='"+py(0)+"' stroke='#e3e7ea' stroke-width='1'/>"+
+    "<text x='"+px(t)+"' y='"+(H-9)+"' font-size='10' fill='#6b7680' text-anchor='middle'>"+t+"</text>"; });
+  let pts=[]; for(let t=1;t<=365;t+=2) pts.push(px(t).toFixed(1)+","+py(riesgo(lam,sg,t)).toFixed(1));
+  s+="<polyline fill='none' stroke='"+color+"' stroke-width='2.4' points='"+pts.join(" ")+"'/>";
+  [30,90,365].forEach(t=>{ s+="<circle cx='"+px(t)+"' cy='"+py(riesgo(lam,sg,t))+"' r='3.4' fill='"+color+"'/>"; });
+  s+="<text x='"+(mL+(W-mL-mR)/2)+"' y='"+H+"' font-size='10' fill='#6b7680' text-anchor='middle'>days since discharge</text></svg>";
+  return s;
+}
+function pintarResultado(m){
+  const color=COLOR[estadoDes]||"#1f4e79";
+  const vals=valsDe(m), lam=lambdaDe(m,vals), sg=m.sigma, hs=m.horizontes_d||[30,90,365];
+  const ref=(CALC.referencia&&CALC.referencia[estadoDes])?CALC.referencia[estadoDes]:null;
+  let html="<div class='derhead'><span class='pill' style='background:"+color+"'>"+OUTCOME[estadoDes].long+"</span>"+
+    "<span class='sub'>"+setName(estadoSet)+" &middot; "+m.variables.length+" predictors &middot; "+m.eventos+" events / "+m.n+"</span></div>";
+  html+="<table><tr><th class='"+(estadoDes==="mortalidad"?"ro":"")+"'>Horizon</th>"+
+    "<th class='"+(estadoDes==="mortalidad"?"ro":"")+"'>Estimated risk</th>"+
+    "<th class='"+(estadoDes==="mortalidad"?"ro":"")+"' style='width:46%'>vs. cohort incidence</th></tr>";
+  hs.forEach(t=>{ const r=riesgo(lam,sg,t), obs=ref&&ref[String(t)]!==undefined?ref[String(t)]:null;
+    const marca=obs!==null?"<u style='left:"+Math.min(99,obs)+"%'></u>":"";
+    const txt=obs!==null?"<div style='font-size:11px;color:#6b7680;margin-top:2px'>cohort: "+obs+" %</div>":"";
+    const lab=t===365?"1 year":(t+" days");
+    html+="<tr><td>"+lab+"</td><td class='cifra' style='color:"+color+"'>"+pct(r)+" %</td>"+
+      "<td><div class='barra'><i style='width:"+Math.min(100,100*r)+"%;background:"+color+"'></i>"+marca+"</div>"+txt+"</td></tr>"; });
+  html+="</table>";
+  html+="<h3>Event probability over the first year</h3>"+curvaSVG(m,color)+
+    "<div class='leyenda'><span><i style='background:"+color+"'></i>"+OUTCOME[estadoDes].long+"</span>"+
+    "<span>Dots: 30, 90 and 365 days.</span>"+
+    (ref?"<span>The tick on each bar is the incidence observed in the cohort.</span>":"")+"</div>";
+  document.getElementById("salida").innerHTML=html;
+}
+/* Identificacion de la version publicada: huella del modelo, DOI y repositorio */
+function pieVersion(){
+  if(!PUB) return "";
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const enl=(u,t)=>"<a href='"+esc(u)+"' target='_blank' rel='noopener'>"+esc(t)+"</a>";
+  return "<p>Model fingerprint (SHA-256 of modelo.json): <code title='"+esc(PUB.sha256_modelo||"")+"'>"+esc((PUB.sha256_modelo||"").slice(0,16))+"…</code>"+
+    (PUB.doi?" &middot; DOI "+enl("https://doi.org/"+PUB.doi,PUB.doi):"")+
+    (PUB.repositorio?" &middot; "+enl(PUB.repositorio,"source code and test cases"):"")+
+    (PUB.url_shiny?" &middot; "+enl(PUB.url_shiny,"Shiny version"):"")+"</p>";
+}
+function pintarPie(){
+  const m0=modeloActivo()||{};
+  document.getElementById("pie").innerHTML=
+    "<p><b>Heart failure risk calculator</b> &middot; version "+(PUB&&PUB.version?PUB.version:(CALC.version||""))+" &middot; model generated "+(CALC.fecha||"")+" &middot; project PI21/00541.</p>"+
+    pieVersion()+
+    "<p>Parametric Weibull accelerated failure time model: S(t|x) = exp(&minus;exp((log t &minus; &mu; &minus; &Sigma;&gamma;x) / &sigma;)); one model per outcome and set, read at several horizons by changing the time."+
+    (m0.n?(" Developed on "+m0.n+" patients"+(m0.agrupado_por_rubin?", with parameters pooled by Rubin's rules over "+m0.m_conjuntos_imputados+" imputed datasets":"")+"."):"")+"</p>"+
+    "<p><b>Developed in a single-centre cohort of 175 patients, without external validation.</b> Its intervals do not incorporate the uncertainty of variable selection and are anti-conservative.</p>"+
+    "<p>Because mortality and the composite are fitted as two separate models, at some extreme covariate profiles the estimated mortality risk can slightly exceed the composite (death or HF readmission), which is impossible by definition; such profiles should be interpreted with caution.</p>"+
+    "<p>Fields start empty; the grey text in each field is only the cohort mean, shown as a guide. Values beyond the cohort range"+(RANGO_P?" (1st–99th percentile, so that no individual patient value is published)":"")+" are allowed up to physiologically plausible limits and are flagged as extrapolation.</p>";
+}
+(function init(){
+  if(!CALC||!Array.isArray(CALC.sets)||!CALC.sets.length){
+    document.getElementById("salida").innerHTML="<div class='placeholder'>Could not load <b>modelo.js</b>. Generate it with the R patch and place it next to this page.</div>"; return;
+  }
+  if(!setPorClave(estadoSet)) estadoSet=CALC.sets[CALC.sets.length-1].clave;
+  pintarDesenlaces(); pintarSelectSet(); pintarForm(); tinte(); pintarPie();
+})();
+</script>
+</body>
+</html>
