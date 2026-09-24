@@ -68,6 +68,33 @@ lam_de   <- function(m, x) {
   exp(lp)
 }
 
+## Datos del proyecto y logotipos de la financiacion, visibles sin desplazarse.
+## Los logotipos (logos/*.png junto a app.R) se incrustan como data URI, de modo
+## que la app funciona igual con runApp() y en Shinylive.
+logo_src <- function(f) {
+  f <- file.path("logos", f)
+  if (!file.exists(f)) return(NULL)
+  paste0("data:image/png;base64,", jsonlite::base64_enc(readBin(f, "raw", file.info(f)$size)))
+}
+cabecera_proyecto <- function() {
+  P <- CALC$proyecto_info
+  img <- function(f, alt, h) {
+    s <- logo_src(f)
+    if (is.null(s)) NULL else tags$img(src = s, alt = alt, style = sprintf("height:%dpx", h))
+  }
+  div(class = "proyecto",
+    div(class = "logos",
+      img("logo_micin_isciii.png", paste("Ministerio de Ciencia, Innovaci\u00f3n y Universidades",
+          "\u2013 Instituto de Salud Carlos III"), 60),
+      img("logo_ue.png", "Cofinanciado por la Uni\u00f3n Europea", 76),
+      img("logo_irycis.png", "Instituto Ram\u00f3n y Cajal de Investigaci\u00f3n Sanitaria (IRYCIS)", 44)),
+    if (!is.null(P)) div(class = "info",
+      tags$b(sprintf("Project %s. ", P$referencia)), tags$i(P$titulo), tags$br(),
+      sprintf("Principal investigator: %s \u00b7 Funding: %s \u00b7 %s",
+              P$investigador_principal, P$financiador, P$centro), tags$br(),
+      tags$span(class = "fin", P$financiacion)))
+}
+
 ## Pie de la version publicada: version, huella de modelo.json, DOI y enlaces
 pie_pub <- function() {
   if (is.null(PUB)) return(NULL)
@@ -85,8 +112,13 @@ ui <- fluidPage(
   tags$head(tags$style(HTML("
     body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
     .aviso{background:#fdf1ee;border-left:5px solid #b7472a;padding:10px 14px;margin:10px 0}
-    .fuera{color:#b7472a;font-size:12px}"))),
+    .fuera{color:#b7472a;font-size:12px}
+    .proyecto{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;border-bottom:1px solid #dde3e8;padding:4px 0 10px;margin-bottom:6px}
+    .proyecto .logos{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+    .proyecto .info{flex:1 1 380px;font-size:12px;color:#41505c;line-height:1.45}
+    .proyecto .fin{color:#6b7680}"))),
   titlePanel(CALC$titulo),
+  cabecera_proyecto(),
   div(class = "aviso", tags$b("For research use only. "),
       "Not a CE-marked medical device (Regulation (EU) 2017/745). ",
       sub(" For research use only.", "", CALC$advertencia, fixed = TRUE)),

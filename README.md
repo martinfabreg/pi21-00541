@@ -2,7 +2,17 @@
 
 # Calculadora de riesgo tras una hospitalización por insuficiencia cardíaca (IC-FEp, ≥ 80 años) · Proyecto PI21/00541
 
-Versión **1.0.0** · 2026-09-23 · DOI: pendiente de la primera release en Zenodo
+Versión **1.0.0** · 2026-09-24 · DOI: pendiente de la primera release en Zenodo
+
+<p>
+<img src="web/logos/logo_micin_isciii.png" alt="Ministerio de Ciencia, Innovación y Universidades – Instituto de Salud Carlos III" height="60">&nbsp;&nbsp;
+<img src="web/logos/logo_ue.png" alt="Cofinanciado por la Unión Europea" height="76">&nbsp;&nbsp;
+<img src="web/logos/logo_irycis.png" alt="IRYCIS" height="44">
+</p>
+
+**Proyecto PI21/00541.** *Development of longitudinal multimarker risk models for decision support across the clinical follow-up of very elderly patients with heart failure and preserved ejection fraction.* Investigador principal: Luis Manzano Espinosa. Hospital Universitario Ramón y Cajal – Instituto Ramón y Cajal de Investigación Sanitaria (IRYCIS), Madrid, Spain.
+
+This work was supported by grant (PI21/00541) from the Instituto de Salud Carlos III (ISCIII), Spain, and co-funded by the European Union through the European Regional Development Fund (ERDF) “A way to make Europe”.
 
 > **Uso exclusivo en investigación.** No es un producto sanitario con marcado CE (Reglamento (UE) 2017/745). Modelo desarrollado en una única cohorte (n = 175) sin validación externa: no debe emplearse para tomar decisiones sobre pacientes concretos.
 
@@ -44,7 +54,7 @@ con x<sub>j</sub> en la escala del modelo (logaritmo natural en las variables ma
 
 1. **Huella del modelo.** El pie de ambas interfaces muestra el inicio de la huella SHA-256 de `modelo.json`. La huella completa de esta versión es
 
-   `fc878f83697d812c139eafcb250ac5d52cf9b05bc2e0dc26dcc0ba71dcb409b8`
+   `1f4c1e2acaf685d17747ada708d82fb0729c8a25c74933e126269a8ba78c0f03`
 
    y figura, junto con las de los demás ficheros, en [`verificacion/SHA256SUMS.txt`](verificacion/SHA256SUMS.txt). Para comprobarla, descargue https://martinfabreg.github.io/pi21-00541/modelo.json y ejecute `sha256sum modelo.json` (Linux/macOS) o `certutil -hashfile modelo.json SHA256` (Windows).
 
@@ -128,7 +138,7 @@ Código (HTML, JavaScript y R): licencia MIT ([`LICENSE`](LICENSE)). Parámetros
 
 ## Financiación
 
-Proyecto PI21/00541, financiado por el Instituto de Salud Carlos III (ISCIII) (Acción Estratégica en Salud 2021) y cofinanciado por la Unión Europea.
+Proyecto PI21/00541, financiado por el Instituto de Salud Carlos III (ISCIII) (Acción Estratégica en Salud 2021) y cofinanciado por la Unión Europea a través del Fondo Europeo de Desarrollo Regional (FEDER) «Una manera de hacer Europa».
 
 ## Contacto
 

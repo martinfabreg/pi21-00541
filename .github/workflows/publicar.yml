@@ -45,7 +45,7 @@ jobs:
         shell: Rscript {0}
         run: |
           dir.create("_site")
-          ok <- file.copy(list.files("web", full.names = TRUE), "_site")
+          ok <- file.copy(list.files("web", full.names = TRUE), "_site", recursive = TRUE)
           stopifnot(all(ok))
           shinylive::export("app", "_site/shiny")
           stopifnot(file.exists("_site/shiny/app.json"))

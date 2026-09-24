@@ -16,6 +16,14 @@ body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-ser
 header{background:var(--az);color:#fff;padding:12px 20px}
 header h1{margin:0;font-size:17px;font-weight:600}
 header p{margin:3px 0 0;font-size:12px;opacity:.85}
+/* Datos del proyecto y logotipos de la financiacion (visibles sin desplazarse) */
+.proyecto{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;
+  padding:10px 20px;border-bottom:1px solid var(--bd);background:#fff}
+.proyecto .logos{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.proyecto .logos img{display:block}
+.proyecto .info{flex:1 1 380px;font-size:12px;color:#41505c;line-height:1.45}
+.proyecto .fin{color:var(--sv)}
+@media(max-width:560px){.proyecto{padding:10px 16px}.proyecto .logos{gap:12px}}
 .aviso{background:#fdf1ee;border-left:4px solid var(--ro);color:#7a2e1b;
   padding:8px 16px;font-size:12px;margin:0}
 .aviso b{color:var(--ro)}
@@ -103,6 +111,14 @@ footer p{margin:0 0 6px}
   <h1>Risk calculator after a heart failure hospitalisation</h1>
   <p>Patients aged 80 or older with preserved ejection fraction &middot; Project PI21/00541 &middot; IRYCIS</p>
 </header>
+<section class="proyecto" aria-label="Project and funding">
+  <div class="logos">
+    <img src="logos/logo_micin_isciii.png" alt="Ministerio de Ciencia, Innovaci&oacute;n y Universidades &ndash; Instituto de Salud Carlos III" style="height:60px" onerror="this.style.display='none'">
+    <img src="logos/logo_ue.png" alt="Cofinanciado por la Uni&oacute;n Europea" style="height:76px" onerror="this.style.display='none'">
+    <img src="logos/logo_irycis.png" alt="Instituto Ram&oacute;n y Cajal de Investigaci&oacute;n Sanitaria (IRYCIS)" style="height:44px" onerror="this.style.display='none'">
+  </div>
+  <div class="info" id="proyInfo"></div>
+</section>
 <p class="aviso"><b>For research use only.</b> These estimates must not be used to make decisions about individual patients. Not a CE-marked medical device (Regulation (EU) 2017/745).</p>
 <main>
   <div class="cols">
@@ -397,6 +413,15 @@ function pieVersion(){
     (PUB.repositorio?" &middot; "+enl(PUB.repositorio,"source code and test cases"):"")+
     (PUB.url_shiny?" &middot; "+enl(PUB.url_shiny,"Shiny version"):"")+"</p>";
 }
+/* Datos del proyecto (modelo.json > proyecto_info, generado en 1.18) */
+function pintarProyecto(){
+  const P=CALC&&CALC.proyecto_info, el=document.getElementById("proyInfo");
+  if(!P||!el) return;
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  el.innerHTML="<b>Project "+esc(P.referencia)+".</b> <i>"+esc(P.titulo)+"</i><br>"+
+    "Principal investigator: "+esc(P.investigador_principal)+" &middot; Funding: "+esc(P.financiador)+
+    " &middot; "+esc(P.centro)+"<br><span class='fin'>"+esc(P.financiacion)+"</span>";
+}
 function pintarPie(){
   const m0=modeloActivo()||{};
   document.getElementById("pie").innerHTML=
@@ -413,7 +438,7 @@ function pintarPie(){
     document.getElementById("salida").innerHTML="<div class='placeholder'>Could not load <b>modelo.js</b>. Generate it with the R patch and place it next to this page.</div>"; return;
   }
   if(!setPorClave(estadoSet)) estadoSet=CALC.sets[CALC.sets.length-1].clave;
-  pintarDesenlaces(); pintarSelectSet(); pintarForm(); tinte(); pintarPie();
+  pintarProyecto(); pintarDesenlaces(); pintarSelectSet(); pintarForm(); tinte(); pintarPie();
 })();
 </script>
 </body>

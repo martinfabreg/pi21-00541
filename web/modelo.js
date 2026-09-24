@@ -1,7 +1,15 @@
-/* Generado por el apartado 1.18 del script maestro (v3.9) el 2026-09-23 21:23 - modelo de referencia por set. No editar a mano. | rango de la cohorte P1-P99 (parche 2026-09-23) */
+/* Generado por el apartado 1.18 del script maestro (v3.9) el 2026-09-23 21:23 - modelo de referencia por set. No editar a mano. | rango de la cohorte P1-P99 (parche 2026-09-24) */
 window.CALC = {
   "proyecto": "PI21/00541",
   "titulo": "Risk calculator after a heart failure hospitalisation (HFpEF, age 80+)",
+  "proyecto_info": {
+    "referencia": "PI21/00541",
+    "titulo": "Development of longitudinal multimarker risk models for decision support across the clinical follow-up of very elderly patients with heart failure and preserved ejection fraction",
+    "investigador_principal": "Luis Manzano Espinosa",
+    "financiador": "Instituto de Salud Carlos III (ISCIII), Acción Estratégica en Salud 2021",
+    "centro": "Hospital Universitario Ramón y Cajal – Instituto Ramón y Cajal de Investigación Sanitaria (IRYCIS), Madrid, Spain",
+    "financiacion": "This work was supported by grant (PI21/00541) from the Instituto de Salud Carlos III (ISCIII), Spain, and co-funded by the European Union through the European Regional Development Fund (ERDF) “A way to make Europe”."
+  },
   "version": "1.0",
   "fecha": "2026-09-23",
   "advertencia": "Developed in a single-centre cohort of 175 patients, without external validation. For research use only. Must not be used for decisions about individual patients.",
@@ -644,8 +652,7 @@ window.CALC = {
     "definicion": "P1-P99",
     "probs": [0.01, 0.99],
     "tipo_cuantil": 7,
-    "fuente": "conjunto imputado 1 del mids de cada desenlace (el mismo D$X del apartado 1.18)",
-    "motivo": "Sustituye a los extremos observados para no publicar valores individuales; las variables binarias no cambian.",
-    "fecha": "2026-09-23"
+    "fuente": "D$X de cada modelo (conjunto imputado 1 del mids de cada desenlace)",
+    "motivo": "Sustituye a los extremos observados para no publicar valores individuales; las variables binarias no cambian."
   }
 };
